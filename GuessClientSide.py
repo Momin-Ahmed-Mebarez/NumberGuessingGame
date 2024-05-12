@@ -1,10 +1,17 @@
 import random
+import requests
 import math
+import time
 
-def start(lowest, highest):
-    hidden = random.randint(lowest, highest)
-    #Deciding the number of tries based on the range of numbers
-    tries = round(math.log(highest-lowest+1,2)) #The equation that calculates the minimum tries is not mine
+answer = {}
+ip = ""
+
+
+def start():
+    #Storing the hidden number and the number of tries
+    tries = answer["tries"]
+    hidden = answer["hidden"]
+    
     print(f"You have {tries} tries good luck!")
     
     for i in range(tries):
@@ -25,23 +32,7 @@ def start(lowest, highest):
             else:
                 print(f"Wow you did it in {i + 1} tries")
                 break
-        
-
-    
     return
-
-
-#Swapping the values if the user entered them in the wrong order
-def valdiate(lowest, highest):
-    temp = 0
-    if(lowest > highest):
-        #A simple swapping aloghartim 
-        temp = lowest
-        lowest = highest
-        highest = temp
-        start(lowest, highest)
-    else: start(lowest,highest)
-
 
 
 
@@ -52,6 +43,13 @@ def valdiate(lowest, highest):
 
 
 if __name__ == "__main__":
-    lowest = int(input("Enter the lowest number: "))
-    highest = int(input("Enter the highest number: "))
-    valdiate(lowest,highest)
+    #Asking the user to enter the ip he wants to conncet to
+    ip = input("Enter the server ip: ")
+    ip = "http://" + ip + ":5000/"
+
+    #Getting the server response (The hidden number and the number of tries) as json 
+    answer = requests.get(ip)
+    answer = answer.json()
+    start()
+    time.sleep(60) # Giving the user time to see the reasult
+    
